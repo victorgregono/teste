@@ -127,9 +127,81 @@ Arquivos gerados em runtime (não versionados):
 .cursor/logs/task-tracking.log     ← log de cada stop
 ```
 
+## Exemplos de uso
+
+### Prompt 1 — Criar uma nova feature
+
+**Cenário:** Você quer criar a feature de **upload de arquivos**.
+
+```
+Leia @docs/prd/TEMPLATE-PRD.md e crie um novo PRD para a feature upload-de-arquivos.
+Depois gere um plano técnico com base no template em @docs/architecture/TEMPLATE-ARCHITECTURE-PLAN.md.
+Não implemente ainda.
+```
+
+**O que acontece:**
+- Gera `docs/prd/UPLOAD-DE-ARQUIVOS-PRD.md` com contexto, escopo, requisitos e critérios de aceite.
+- Gera `docs/architecture/UPLOAD-DE-ARQUIVOS-ARCHITECTURE-PLAN.md` com abordagem técnica, arquivos impactados e riscos.
+- Nenhum código é alterado.
+
+---
+
+### Prompt 2 — Quebrar em tasks
+
+**Cenário:** PRD e plano técnico prontos, hora de criar as tasks.
+
+```
+Leia:
+- @docs/prd/UPLOAD-DE-ARQUIVOS-PRD.md
+- @docs/architecture/UPLOAD-DE-ARQUIVOS-ARCHITECTURE-PLAN.md
+- @docs/tasks/TEMPLATE-TASK.md
+
+Agora crie as tasks da feature em @docs/tasks/UPLOAD-DE-ARQUIVOS/
+e gere também o @docs/tasks/UPLOAD-DE-ARQUIVOS/INDEX.md.
+```
+
+**O que acontece:**
+- Cria tasks individuais: `TASK-001.md`, `TASK-002.md`, etc., todas com status `TODO`.
+- Cria o `INDEX.md` da feature com visão consolidada dos statuses.
+
+---
+
+### Prompt 3 — Executar uma task
+
+**Cenário:** Você quer implementar a TASK-002.
+
+```
+Leia @docs/tasks/UPLOAD-DE-ARQUIVOS/INDEX.md e @docs/tasks/UPLOAD-DE-ARQUIVOS/TASK-002.md.
+
+Se a task estiver em TODO:
+1. atualize para DOING
+2. me diga quais arquivos serão alterados
+3. implemente apenas essa task
+4. ao concluir, atualize a task para DONE
+5. atualize também o INDEX.md
+6. resuma o que foi feito
+```
+
+**O que acontece:**
+1. Status da TASK-002 muda para `DOING`.
+2. Lista os arquivos que serão modificados.
+3. Implementa **somente** aquela task.
+4. Atualiza o status para `DONE` com resultado registrado.
+5. Atualiza o `INDEX.md` da feature.
+
+---
+
+### Prompt bônus — Retomar o trabalho
+
+**Cenário:** Voltou ao projeto depois de um tempo e quer saber por onde continuar.
+
+```
+Leia @docs/tasks/UPLOAD-DE-ARQUIVOS/INDEX.md e me diga qual é a próxima task a executar.
+```
+
+O agente encontra a próxima `TODO`, carrega o contexto completo e já está pronto para executar — sem precisar reexplicar nada.
+
+---
+
 ## Regra de ouro
 Se a task não foi atualizada no arquivo correspondente e no `INDEX.md`, ela **não está concluída**.
-
-<img width="1024" height="1050" alt="Gemini_Generated_Image_ey95kjey95kjey95" src="https://github.com/user-attachments/assets/1271629f-3476-4883-b15f-a74c0731b18b" />
-<img width="1411" height="736" alt="Gemini_Generated_Image_u31ljdu31ljdu31l" src="https://github.com/user-attachments/assets/6832f6d6-4aa3-49d3-92a6-742889bb82fd" />
-
