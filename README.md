@@ -178,4 +178,6 @@ Leia @docs/tasks/UPLOAD-DE-ARQUIVOS/INDEX.md e me diga qual é a próxima task a
 ```
 
 ---
+<img width="1024" height="1050" alt="Gemini_Generated_Image_ey95kjey95kjey95" src="https://github.com/user-attachments/assets/f17ac120-d770-4f0f-b963-cc030b2a0efa" />
+<img width="1411" height="736" alt="Gemini_Generated_Image_u31ljdu31ljdu31l" src="https://github.com/user-attachments/assets/4380b1a9-ec5a-490e-a823-de42cca5c8b1" />
 
