@@ -1,0 +1,28 @@
+---
+description: "Padrões de testes e validação"
+alwaysApply: true
+---
+
+# Testes e validação
+
+<!--
+Esta rule define a expectativa mínima de testes.
+Ela ajuda a IA a sempre considerar validação, mesmo quando o usuário não pedir explicitamente.
+-->
+
+## Regras
+- Toda implementação relevante deve considerar testes.
+- Sempre sugerir cenários felizes, cenários de erro e casos limite.
+- Quando não for possível implementar testes agora, registrar o débito técnico.
+
+## Checklist mínimo
+- O comportamento principal foi validado?
+- Os cenários de falha foram considerados?
+- Há risco de regressão?
+- Existe impacto em contratos, integrações ou persistência?
+
+## Entrega mínima
+Ao concluir uma task, o agente deve informar:
+- o que foi implementado
+- como validar
+- quais testes foram criados ou sugeridos

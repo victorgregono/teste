@@ -1,0 +1,33 @@
+---
+description: "Fluxo SDD obrigatório para novas funcionalidades e mudanças relevantes"
+alwaysApply: true
+---
+
+# Fluxo SDD obrigatório
+
+<!--
+Esta rule garante que o Cursor sempre siga o processo:
+PRD -> plano técnico -> tasks -> implementação.
+Use esta rule como guardrail principal do projeto.
+-->
+
+Para qualquer nova funcionalidade, refatoração relevante ou melhoria com impacto em múltiplos arquivos:
+
+1. Ler a especificação em `docs/prd/`
+2. Criar ou revisar o plano técnico em `docs/architecture/`
+3. Quebrar o trabalho em tasks em `docs/tasks/`
+4. Implementar uma task por vez
+5. Propor testes e critérios de validação
+
+## Saída mínima esperada do agente
+- resumo do objetivo
+- arquivos impactados
+- abordagem técnica
+- task atual
+- critérios de validação
+
+## O que evitar
+- sair implementando feature grande sem plano
+- criar abstrações desnecessárias
+- alterar arquivos fora do escopo sem justificar
+- considerar a feature pronta sem atualizar tracking

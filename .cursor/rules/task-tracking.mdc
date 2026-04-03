@@ -1,0 +1,25 @@
+---
+description: "Controle de execução e status de tasks"
+alwaysApply: true
+---
+
+# Tracking de tasks
+
+<!--
+Esta rule garante que a IA sempre trabalhe com base no estado real salvo nos arquivos.
+Ela evita depender da "memória da conversa".
+-->
+
+Sempre que executar uma task:
+
+1. Ler `docs/tasks/<FEATURE>/INDEX.md`
+2. Ler a task específica antes de implementar
+3. Se a task estiver em `TODO`, mudar para `DOING` antes de iniciar
+4. Ao concluir e validar os critérios de pronto, mudar para `DONE`
+5. Atualizar também o `INDEX.md` da feature
+6. Se não for possível concluir, marcar como `BLOCKED` e registrar o motivo
+
+## Regras adicionais
+- Nunca considerar uma task concluída sem atualizar os arquivos de tracking
+- Nunca iniciar a próxima task sem consultar o `INDEX.md`
+- Executar uma task por vez

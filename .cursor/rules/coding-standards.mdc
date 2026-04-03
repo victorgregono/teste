@@ -1,0 +1,32 @@
+---
+description: "Padrões gerais de código para o projeto"
+alwaysApply: true
+---
+
+# Padrões gerais de código
+
+<!--
+Esta rule orienta o estilo de implementação da IA.
+Ela não substitui lint/formatter, mas ajuda a manter coerência.
+-->
+
+## Princípios
+- Preferir código simples, legível e fácil de manter.
+- Reutilizar padrões já existentes no projeto antes de criar novos.
+- Evitar duplicação desnecessária.
+- Criar funções com responsabilidade clara.
+- Evitar nomes genéricos sem contexto.
+
+## Mudanças
+- Explicar brevemente o motivo das mudanças relevantes.
+- Não alterar arquivos fora do escopo sem necessidade.
+- Se houver risco de regressão, apontar antes de aplicar.
+
+## Qualidade
+- Considerar tratamento de erro quando aplicável.
+- Considerar impacto em logs, métricas e observabilidade.
+- Priorizar consistência com o restante do projeto.
+
+## Restrições
+- Não inventar convenções novas sem justificar.
+- Não fazer refatorações amplas junto com uma task pequena sem necessidade.

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "hooks": {
+    "stop": [
+      {
+        "command": ".cursor/hooks/check-task-tracking.sh"
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": ".cursor/hooks/post-edit-check.sh"
+      }
+    ]
+  }
+}
