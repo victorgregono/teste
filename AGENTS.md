@@ -129,3 +129,7 @@ Arquivos gerados em runtime (não versionados):
 
 ## Regra de ouro
 Se a task não foi atualizada no arquivo correspondente e no `INDEX.md`, ela **não está concluída**.
+
+<img width="1024" height="1050" alt="Gemini_Generated_Image_ey95kjey95kjey95" src="https://github.com/user-attachments/assets/1271629f-3476-4883-b15f-a74c0731b18b" />
+<img width="1411" height="736" alt="Gemini_Generated_Image_u31ljdu31ljdu31l" src="https://github.com/user-attachments/assets/6832f6d6-4aa3-49d3-92a6-742889bb82fd" />
+
