@@ -4,7 +4,7 @@ Este repositório implementa um fluxo de **SDD (Spec-Driven Development)** com l
 
 ## O que é SDD?
 
-Spec-Driven Development é uma abordagem onde **nenhuma feature começa pelo código**. Toda implementação parte de uma especificação clara (PRD), passa por um plano técnico, é quebrada em tasks rastreáveis e só então é executada — uma task por vez.
+Spec-Driven Development é uma abordagem onde **nenhuma feature começa pelo código**. Toda implementação parte de uma especificação clara (PRD), passa por um plano técnico, é quebrada em tasks rastreáveis e só então é implementada.
 
 Isso garante:
 - Mais contexto para a IA e para o time
@@ -38,6 +38,10 @@ Ideia → PRD → Plano técnico → Tasks → Implementação → Testes → Va
 ├── README.md                        ← este arquivo: onboarding e documentação para humanos
 ├── .cursor/
 │   ├── hooks.json                   ← registra os hooks do Cursor (afterFileEdit, stop) e seus scripts
+│   ├── hooks/                       ← scripts executados automaticamente pelos hooks do Cursor
+│   │   ├── detect-active-feature.sh ← detecta a feature ativa com base no arquivo editado ou task em DOING
+│   │   ├── post-edit-check.sh       ← executado após cada edição: persiste estado e loga a feature ativa
+│   │   └── check-task-tracking.sh   ← executado no stop: valida se todas as tasks foram atualizadas
 │   └── rules/
 │       ├── sdd.mdc                  ← rule: garante que o fluxo PRD→arquitetura→tasks→impl seja seguido
 │       ├── coding-standards.mdc     ← rule: padrões de código, estilo e boas práticas
@@ -74,12 +78,15 @@ Ideia → PRD → Plano técnico → Tasks → Implementação → Testes → Va
 | Caminho | Função |
 |---|---|
 | `AGENTS.md` | Manual persistente do agente. Lido automaticamente pelo Cursor e agentes compatíveis. Define fluxo, regras e mapa do projeto. |
-| `.cursor/hooks.json` | Configura os hooks do Cursor: `afterFileEdit` (detecta feature e persiste estado) e `stop` (valida tracking de tasks). |
+| `.cursor/hooks.json` | Configura os hooks do Cursor: `afterFileEdit` (chama `post-edit-check.sh`) e `stop` (chama `check-task-tracking.sh`). |
+| `.cursor/hooks/detect-active-feature.sh` | Detecta a feature ativa com 3 níveis de prioridade: payload do hook → task em DOING → feature mais recente. |
+| `.cursor/hooks/post-edit-check.sh` | Executado após cada `afterFileEdit`. Chamada `detect-active-feature.sh`, persiste o resultado em `active-feature.txt` e loga. |
+| `.cursor/hooks/check-task-tracking.sh` | Executado no `stop`. Verifica se há tasks em DOING sem atualização e loga o resultado em `task-tracking.log`. |
 | `.cursor/rules/sdd.mdc` | Rule sempre ativa. Garante que nenhuma feature seja implementada sem PRD, plano técnico e tasks. |
 | `.cursor/rules/coding-standards.mdc` | Rule sempre ativa. Define boas práticas de código, simplicidade e coerência. |
 | `.cursor/rules/testing.mdc` | Rule sempre ativa. Garante que testes sejam sempre considerados nas entregas. |
 | `.cursor/rules/task-tracking.mdc` | Rule sempre ativa. Obriga atualização de status nos arquivos de task e no INDEX.md. |
-| `docs/prd/TEMPLATE-PRD.md` | Template padrão para documentar novas features. Cobre contexto, escopo, requisitos e crit��rios de aceite. |
+| `docs/prd/TEMPLATE-PRD.md` | Template padrão para documentar novas features. Cobre contexto, escopo, requisitos e critérios de aceite. |
 | `docs/prd/FEATURE-X-PRD.md` | Exemplo real de PRD preenchido para a feature de autenticação JWT. |
 | `docs/architecture/TEMPLATE-ARCHITECTURE-PLAN.md` | Template para planos técnicos. Cobre abordagem, arquivos impactados, contratos, riscos e testes. |
 | `docs/architecture/FEATURE-X-ARCHITECTURE-PLAN.md` | Exemplo real de plano técnico preenchido para a autenticação JWT. |
@@ -95,13 +102,30 @@ Ideia → PRD → Plano técnico → Tasks → Implementação → Testes → Va
 
 ## Hooks inteligentes (`.cursor/hooks/`)
 
-Os hooks detectam automaticamente a feature ativa com esta prioridade:
+Os hooks são scripts shell executados automaticamente pelo Cursor em momentos-chave do ciclo de edição.
+
+### Scripts disponíveis
+
+#### `detect-active-feature.sh`
+Detecta a feature ativa com a seguinte ordem de prioridade:
 
 1. **Payload do hook** — extrai o nome da feature a partir do caminho do arquivo editado
 2. **Task em DOING** — procura tasks com status `DOING` em `docs/tasks/<FEATURE>/TASK-*.md`
 3. **Feature mais recente** — pega a feature com o arquivo mais recentemente alterado em `docs/tasks/`
 
-Arquivos gerados em runtime (não versionados):
+#### `post-edit-check.sh`
+Executado pelo hook `afterFileEdit`. Responsável por:
+- Chamar `detect-active-feature.sh` para identificar a feature ativa
+- Persistir o resultado em `.cursor/state/active-feature.txt`
+- Registrar a execução em `.cursor/logs/post-edit.log`
+
+#### `check-task-tracking.sh`
+Executado no hook `stop`. Responsável por:
+- Verificar se existem tasks com status `DOING` que não foram atualizadas
+- Alertar quando o tracking de tasks está inconsistente
+- Registrar o resultado em `.cursor/logs/task-tracking.log`
+
+### Arquivos gerados em runtime (não versionados)
 
 ```text
 .cursor/state/active-feature.txt   ← última feature ativa detectada
@@ -154,7 +178,4 @@ Leia @docs/tasks/UPLOAD-DE-ARQUIVOS/INDEX.md e me diga qual é a próxima task a
 ```
 
 ---
-
-<img width="1024" height="1050" alt="Gemini_Generated_Image_ey95kjey95kjey95" src="https://github.com/user-attachments/assets/a2abae4e-0802-4164-84d6-b058484664ba" />
-<img width="1411" height="736" alt="Gemini_Generated_Image_u31ljdu31ljdu31l" src="https://github.com/user-attachments/assets/6e0cc160-b2c5-42e4-852b-983e4d550b89" />
 
