@@ -1,14 +1,17 @@
 {
   "version": 1,
   "hooks": {
-    "stop": [
-      {
-        "command": ".cursor/hooks/check-task-tracking.sh"
-      }
-    ],
     "afterFileEdit": [
       {
-        "command": ".cursor/hooks/post-edit-check.sh"
+        "command": ".cursor/hooks/post-edit-check.sh",
+        "timeout": 20
+      }
+    ],
+    "stop": [
+      {
+        "command": ".cursor/hooks/check-task-tracking.sh",
+        "timeout": 20,
+        "loop_limit": 3
       }
     ]
   }
