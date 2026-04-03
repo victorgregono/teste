@@ -208,8 +208,8 @@ Se a task não foi atualizada no arquivo correspondente e no `INDEX.md`, ela **n
 
 ---
 
+
 <img width="1024" height="1050" alt="Gemini_Generated_Image_ey95kjey95kjey95" src="https://github.com/user-attachments/assets/33cc8deb-20c7-48f1-9be6-e166ea60b5b9" />
-<img width="1024" height="1050" alt="Gemini_Generated_Image_ey95kjey95kjey95" src="https://github.com/user-attachments/assets/33cc8deb-20c7-48f1-9be6-e166ea60b5b9" />
-<img width="1411" height="736" alt="Gemini_Generated_Image_u31ljdu31ljdu31l" src="https://github.com/user-attachments/assets/65fbdcb1-160d-40b8-8a79-f80a2b77468e" />
+
 <img width="1411" height="736" alt="Gemini_Generated_Image_u31ljdu31ljdu31l" src="https://github.com/user-attachments/assets/65fbdcb1-160d-40b8-8a79-f80a2b77468e" />
 
