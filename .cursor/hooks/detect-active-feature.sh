@@ -37,6 +37,10 @@ sanitize_feature() {
       return 1
       ;;
   esac
+  # whitelist: apenas caracteres alfanuméricos, hífens e underscores
+  if ! printf '%s' "$raw" | grep -qE '^[A-Za-z0-9_-]+$'; then
+    return 1
+  fi
   printf '%s\n' "$raw"
 }
 

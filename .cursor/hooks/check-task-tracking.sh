@@ -17,6 +17,11 @@
 
 set -euo pipefail
 
+is_valid_feature() {
+  local val="${1:-}"
+  printf '%s' "$val" | grep -qE '^[A-Za-z0-9_-]+$'
+}
+
 HOOK_PAYLOAD="$(cat || true)"
 
 STATE_DIR=".cursor/state"
@@ -32,12 +37,20 @@ FEATURE=""
 
 # 1) tenta usar a feature persistida
 if [ -f "${STATE_FILE}" ]; then
-  FEATURE="$(cat "${STATE_FILE}" | tr -d '\r' || true)"
+  FEATURE="$(flock -s -w 5 "${STATE_FILE}.lock" cat "${STATE_FILE}" | tr -d '\r' || true)"
+  if [ -n "$FEATURE" ] && ! is_valid_feature "$FEATURE"; then
+    echo "[$TIMESTAMP] WARN: Feature inválida no state file ignorada: ${FEATURE}" >> "${LOG_FILE}"
+    FEATURE=""
+  fi
 fi
 
 # 2) fallback: tentar detectar novamente a partir do payload / arquivos
 if [ -z "${FEATURE}" ]; then
   FEATURE="$(".cursor/hooks/detect-active-feature.sh" "$HOOK_PAYLOAD" || true)"
+  if [ -n "$FEATURE" ] && ! is_valid_feature "$FEATURE"; then
+    echo "[$TIMESTAMP] WARN: Feature inválida detectada via script ignorada: ${FEATURE}" >> "${LOG_FILE}"
+    FEATURE=""
+  fi
 fi
 
 FEATURE="${FEATURE:-}"

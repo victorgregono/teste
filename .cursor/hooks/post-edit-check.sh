@@ -16,6 +16,11 @@
 
 set -euo pipefail
 
+is_valid_feature() {
+  local val="${1:-}"
+  printf '%s' "$val" | grep -qE '^[A-Za-z0-9_-]+$'
+}
+
 HOOK_PAYLOAD="$(cat || true)"
 
 STATE_DIR=".cursor/state"
@@ -31,7 +36,17 @@ FEATURE="$(".cursor/hooks/detect-active-feature.sh" "$HOOK_PAYLOAD" || true)"
 FEATURE="${FEATURE:-}"
 
 if [ -n "$FEATURE" ]; then
-  printf '%s\n' "$FEATURE" > "${STATE_FILE}"
+  if is_valid_feature "$FEATURE"; then
+    (
+      flock -x -w 5 200
+      printf '%s\n' "$FEATURE" > "${STATE_FILE}"
+    ) 200>"${STATE_FILE}.lock"
+  else
+    {
+      echo "[$TIMESTAMP] WARN: Feature com caracteres inválidos ignorada: ${FEATURE}"
+    } >> "${LOG_FILE}"
+    FEATURE=""
+  fi
 fi
 
 {
