@@ -30,8 +30,17 @@ TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
 FEATURE="$(".cursor/hooks/detect-active-feature.sh" "$HOOK_PAYLOAD" || true)"
 FEATURE="${FEATURE:-}"
 
+# Validar que FEATURE contém apenas caracteres permitidos (whitelist)
+if [ -n "$FEATURE" ] && ! printf '%s' "$FEATURE" | grep -qE '^[A-Za-z0-9_-]+$'; then
+  echo "[$TIMESTAMP] AVISO: valor de FEATURE inválido descartado: '${FEATURE}'" >> "${LOG_FILE}"
+  FEATURE=""
+fi
+
 if [ -n "$FEATURE" ]; then
-  printf '%s\n' "$FEATURE" > "${STATE_FILE}"
+  (
+    flock -x -w 5 200 || { echo "[$TIMESTAMP] flock timeout na escrita" >> "${LOG_FILE}"; exit 0; }
+    printf '%s\n' "$FEATURE" > "${STATE_FILE}"
+  ) 200>"${STATE_FILE}.lock"
 fi
 
 {

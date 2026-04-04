@@ -30,14 +30,30 @@ TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
 
 FEATURE=""
 
-# 1) tenta usar a feature persistida
+# 1) tenta usar a feature persistida (com lock compartilhado para leitura consistente)
 if [ -f "${STATE_FILE}" ]; then
-  FEATURE="$(cat "${STATE_FILE}" | tr -d '\r' || true)"
+  FEATURE="$(
+    (
+      flock -s -w 5 200 || true
+      cat "${STATE_FILE}" | tr -d '\r' || true
+    ) 200>"${STATE_FILE}.lock"
+  )"
+fi
+
+# Validar FEATURE lida do STATE_FILE
+if [ -n "$FEATURE" ] && ! printf '%s' "$FEATURE" | grep -qE '^[A-Za-z0-9_-]+$'; then
+  echo "[$TIMESTAMP] AVISO: valor inválido em STATE_FILE descartado: '${FEATURE}'" >> "${LOG_FILE}"
+  FEATURE=""
 fi
 
 # 2) fallback: tentar detectar novamente a partir do payload / arquivos
 if [ -z "${FEATURE}" ]; then
   FEATURE="$(".cursor/hooks/detect-active-feature.sh" "$HOOK_PAYLOAD" || true)"
+  # Validar FEATURE detectada pelo script auxiliar
+  if [ -n "$FEATURE" ] && ! printf '%s' "$FEATURE" | grep -qE '^[A-Za-z0-9_-]+$'; then
+    echo "[$TIMESTAMP] AVISO: valor inválido de detect-active-feature descartado: '${FEATURE}'" >> "${LOG_FILE}"
+    FEATURE=""
+  fi
 fi
 
 FEATURE="${FEATURE:-}"
