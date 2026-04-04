@@ -79,9 +79,9 @@ Ideia → PRD → Plano técnico → Tasks → Implementação → Testes → Va
 |---|---|
 | `AGENTS.md` | Manual persistente do agente. Lido automaticamente pelo Cursor e agentes compatíveis. Define fluxo, regras e mapa do projeto. |
 | `.cursor/hooks.json` | Configura os hooks do Cursor: `afterFileEdit` (chama `post-edit-check.sh`) e `stop` (chama `check-task-tracking.sh`). |
-| `.cursor/hooks/detect-active-feature.sh` | Detecta a feature ativa com 3 níveis de prioridade: payload do hook → task em DOING → feature mais recente. |
-| `.cursor/hooks/post-edit-check.sh` | Executado após cada `afterFileEdit`. Chamada `detect-active-feature.sh`, persiste o resultado em `active-feature.txt` e loga. |
-| `.cursor/hooks/check-task-tracking.sh` | Executado no `stop`. Verifica se há tasks em DOING sem atualização e loga o resultado em `task-tracking.log`. |
+| `.cursor/hooks/detect-active-feature.sh` | Detecta a feature ativa com 3 níveis de prioridade: payload do hook → task em DOING → feature mais recente. Aplica whitelist `[A-Za-z0-9_-]` em todos os candidatos. |
+| `.cursor/hooks/post-edit-check.sh` | Executado após cada `afterFileEdit`. Chama `detect-active-feature.sh`, valida o resultado e persiste em `active-feature.txt` com `flock -x` (lock exclusivo). |
+| `.cursor/hooks/check-task-tracking.sh` | Executado no `stop`. Lê `active-feature.txt` com `flock -s` (lock compartilhado), valida o valor e verifica tasks em DOING sem atualização. |
 | `.cursor/rules/sdd.mdc` | Rule sempre ativa. Garante que nenhuma feature seja implementada sem PRD, plano técnico e tasks. |
 | `.cursor/rules/coding-standards.mdc` | Rule sempre ativa. Define boas práticas de código, simplicidade e coerência. |
 | `.cursor/rules/testing.mdc` | Rule sempre ativa. Garante que testes sejam sempre considerados nas entregas. |
@@ -113,24 +113,39 @@ Detecta a feature ativa com a seguinte ordem de prioridade:
 2. **Task em DOING** — procura tasks com status `DOING` em `docs/tasks/<FEATURE>/TASK-*.md`
 3. **Feature mais recente** — pega a feature com o arquivo mais recentemente alterado em `docs/tasks/`
 
+Todos os candidatos a nome de feature passam pela função `sanitize_feature`, que aplica uma **whitelist** de caracteres `[A-Za-z0-9_-]`. Nomes que não satisfazem essa restrição são descartados silenciosamente.
+
 #### `post-edit-check.sh`
 Executado pelo hook `afterFileEdit`. Responsável por:
 - Chamar `detect-active-feature.sh` para identificar a feature ativa
-- Persistir o resultado em `.cursor/state/active-feature.txt`
+- Validar o nome retornado com a função `is_valid_feature` (whitelist `[A-Za-z0-9_-]`) antes de qualquer escrita
+- Persistir o resultado em `.cursor/state/active-feature.txt` usando **`flock -x`** (lock exclusivo com timeout de 5 s) para garantir atomicidade em sessões paralelas
 - Registrar a execução em `.cursor/logs/post-edit.log`
 
 #### `check-task-tracking.sh`
 Executado no hook `stop`. Responsável por:
+- Ler `.cursor/state/active-feature.txt` usando **`flock -s`** (lock compartilhado) para evitar leitura parcial
+- Validar o valor lido com `is_valid_feature` antes de usá-lo
 - Verificar se existem tasks com status `DOING` que não foram atualizadas
 - Alertar quando o tracking de tasks está inconsistente
 - Registrar o resultado em `.cursor/logs/task-tracking.log`
 
+### Segurança e escalabilidade
+
+| Garantia | Implementação |
+|---|---|
+| Sanitização de inputs | Todos os nomes de feature passam por whitelist `^[A-Za-z0-9_-]+$` antes de serem usados em paths ou escritos em disco |
+| Prevenção de path traversal | Nomes que contenham `/`, `..`, espaços ou caracteres especiais são rejeitados na validação |
+| Acesso concorrente (escrita) | `post-edit-check.sh` usa `flock -x -w 5` (timeout de 5 s) no arquivo de lock antes de sobrescrever `active-feature.txt` |
+| Acesso concorrente (leitura) | `check-task-tracking.sh` usa `flock -s -w 5` (timeout de 5 s) para ler `active-feature.txt` sem race condition |
+
 ### Arquivos gerados em runtime (não versionados)
 
 ```text
-.cursor/state/active-feature.txt   ← última feature ativa detectada
-.cursor/logs/post-edit.log         ← log de cada afterFileEdit
-.cursor/logs/task-tracking.log     ← log de cada stop
+.cursor/state/active-feature.txt      ← última feature ativa detectada
+.cursor/state/active-feature.txt.lock ← arquivo de lock gerado automaticamente pelo flock (não versionar)
+.cursor/logs/post-edit.log            ← log de cada afterFileEdit
+.cursor/logs/task-tracking.log        ← log de cada stop
 ```
 
 ---
