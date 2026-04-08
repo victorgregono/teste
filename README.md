@@ -266,10 +266,8 @@ Leia @docs/tasks/UPLOAD-DE-ARQUIVOS/INDEX.md e me diga qual é a próxima task a
 
 ---
 
-<img width="1024" height="1050" alt="Gemini_Generated_Image_ey95kjey95kjey95" src="https://github.com/user-attachments/assets/41ab74a4-ef97-48a0-940a-f5dc6833b4ab" />
-<img width="1411" height="736" alt="Gemini_Generated_Image_u31ljdu31ljdu31l" src="https://github.com/user-attachments/assets/f3632d59-3c1c-43f3-a6b9-0777041fb84c" />
+<img width="1376" height="768" alt="Gemini_Generated_Image_qmh412qmh412qmh4" src="https://github.com/user-attachments/assets/d002e8d8-7c72-433f-a463-aca139238f4d" />
 
-<img width="1407" height="768" alt="Gemini_Generated_Image_lfd0tilfd0tilfd0" src="https://github.com/user-attachments/assets/6d0be69c-eef4-46cb-afea-9b77c751a9a9" />
 
 ---
 
