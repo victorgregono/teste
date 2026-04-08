@@ -1,5 +1,7 @@
 # SDD Template Repository
 
+> 🔗 **github.com/victorgregono/sdd-scrum-template**
+
 Este repositório implementa um fluxo de **SDD (Spec-Driven Development)** com lógica de **Scrum** para orientar o desenvolvimento assistido por IA.
 
 ## O que é SDD?
@@ -270,3 +272,5 @@ Leia @docs/tasks/UPLOAD-DE-ARQUIVOS/INDEX.md e me diga qual é a próxima task a
 <img width="1407" height="768" alt="Gemini_Generated_Image_lfd0tilfd0tilfd0" src="https://github.com/user-attachments/assets/6d0be69c-eef4-46cb-afea-9b77c751a9a9" />
 
 ---
+
+🔗 **Repositório:** [github.com/victorgregono/sdd-scrum-template](https://github.com/victorgregono/sdd-scrum-template)
